@@ -155,7 +155,9 @@ AppAsset::register($this);
                     <div class="text-widget widget">
                         <h4 class="widget-title mb40">Location</h4>
                         <div class="widget-content">
-                            <p>Conveniently enhance high-quality imperatives vis-a-vis team driven technologies. Intrinsicly fashion economically sound communities rather than principle-centered deliverables. Synergistically impact.</p>
+                            <p>Conveniently enhance high-quality imperatives vis-a-vis team driven technologies.
+                                Intrinsicly fashion economically sound communities rather than principle-centered
+                                deliverables. Synergistically impact.</p>
                         </div>
                     </div>
                 </div>
@@ -217,7 +219,10 @@ AppAsset::register($this);
                             <p class="mb40">Subscribe to our newsletter for the latest updates and offers.</p>
                             <form action="index.html">
                                 <div class="input-group">
-                                    <input class="form-control form-email-widget" placeholder="Email address" type="text"><span class="input-group-btn"><input class="btn btn-email" type="submit" value="✓"></span>
+                                    <input class="form-control form-email-widget" placeholder="Email address"
+                                           type="text"><span class="input-group-btn"><input class="btn btn-email"
+                                                                                            type="submit"
+                                                                                            value="✓"></span>
                                 </div>
                             </form>
                             <p></p>
@@ -233,7 +238,9 @@ AppAsset::register($this);
                     <a class="pinterest" href="#">Pinterest</a>
                 </div>
                 <div class="col-md-6 text-right">
-                    <p class="copyright"><small>© 2019. Designed and Developed by <a href="http://www.distinctivethemes.com" target="_blank">Distinctive Themes</a></small></p>
+                    <p class="copyright">
+                        <small>© <?= date('Y') ?>. <?= Yii::$app->name ?>, All Rights Reserved</small>
+                    </p>
                 </div>
             </div>
         </div>
