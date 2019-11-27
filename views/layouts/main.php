@@ -28,6 +28,7 @@ AppAsset::register($this);
           rel='stylesheet' type='text/css'>
 </head>
 <body class="top-navigation pushy-right-side regular-nav">
+<?php $this->beginBody() ?>
 
 <!-- Site Overlay -->
 <div class="site-overlay"></div>
@@ -67,7 +68,7 @@ AppAsset::register($this);
         <div class="container">
             <div class="row">
                 <div class="col-sm-4">
-                    <a class="logo" href="index.html">
+                    <a class="logo" href="<?= Yii::$app->homeUrl ?>">
                         <img alt="" class="logo img-responsive" src="<?= Url::to('@web/lib/images/logo-light.png') ?>"></a>
                 </div>
                 <div class="col-sm-8">
@@ -139,7 +140,7 @@ AppAsset::register($this);
         </div>
     </div>
 
-    <?php $this->beginBody() ?>
+    <?= $content ?>
 
     <footer id="footer-wrapper" class="dark-wrapper">
         <div class="container">
@@ -248,7 +249,6 @@ AppAsset::register($this);
 
     <a href="#" id="back-to-top"><i class="fa fa-angle-up"></i></a>
 </div>
-
 
 <?php $this->endBody() ?>
 </body>
