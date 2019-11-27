@@ -4,6 +4,8 @@ use yii\helpers\ArrayHelper;
 
 $config = [
     'id' => 'basic',
+    'name' => 'My Application',
+    'timeZone' => 'Europe/Warsaw',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -11,6 +13,9 @@ $config = [
         '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'KP9dvJU_-IHKFRIZgckDsnYBE-HzVpiR',
