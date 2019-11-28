@@ -2,7 +2,9 @@
 
 namespace app\models;
 
-use Yii;
+use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -15,11 +17,44 @@ use yii\db\ActiveRecord;
  * @property string $description
  * @property int $parent_id
  * @property int $position
+ * @property int $status
  * @property string $created_at
  * @property string $updated_at
+ *
+ * @property Category $parent
+ * @property Category[] $children
  */
 class Category extends ActiveRecord
 {
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
+
+    const MAIN_PARENT = 0;
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => date("Y-m-d H:i:s"),
+            ],
+            'slug' => [
+                'class' => SluggableBehavior::class,
+                'attribute' => 'name',
+                'slugAttribute' => 'slug',
+                'ensureUnique' => true,
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,8 +69,8 @@ class Category extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'slug'], 'required'],
-            [['parent_id', 'position'], 'integer'],
+            [['name', 'slug', 'status'], 'required'],
+            [['parent_id', 'position', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'slug', 'description'], 'string', 'max' => 255],
             [['image'], 'string'],
@@ -58,5 +93,21 @@ class Category extends ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getParent()
+    {
+        return $this->hasOne(Category::class, ['id' => 'parent_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getChildren()
+    {
+        return $this->hasMany(Category::class, ['parent_id' => 'id']);
     }
 }
