@@ -108,6 +108,7 @@ class Category extends ActiveRecord
      */
     public function getChildren()
     {
-        return $this->hasMany(Category::class, ['parent_id' => 'id']);
+        return $this->hasMany(Category::class, ['parent_id' => 'id'])
+            ->orderBy(['position' => SORT_ASC]);
     }
 }
