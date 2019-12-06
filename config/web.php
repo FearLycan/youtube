@@ -6,6 +6,7 @@ $config = [
     'id' => 'basic',
     'name' => 'My Application',
     'timeZone' => 'Europe/Warsaw',
+    'defaultRoute' => 'channel/index',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [

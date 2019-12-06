@@ -23,15 +23,14 @@ class AppAsset extends AssetBundle
         'lib/bootstrap/css/bootstrap.css',
         'css/font-awesome.min.css',
         'lib/pe-icons/css/pe-icon-7-stroke.css',
-        //'lib/css/alt-colors.css',
         'lib/css/animate.css',
         'lib/css/plugins.css',
         'lib/css/style.css',
-
-        //'css/site.css',
+        'css/site.css',
     ];
     public $js = [
         'lib/js/jquery.min.js',
+        'js/jquery.pjax.js',
         'lib/bootstrap/js/bootstrap.min.js',
         'lib/js/owl-carousel.js',
         'lib/js/plugins.js',

@@ -33,7 +33,7 @@ class Channel
             'id' => $channel_id,
         ];
 
-        return $this->request(YouTube::API_CHANNELS, YouTube::METHOD_GET, $data);
+        return $this->youtube->request(YouTube::API_CHANNELS, YouTube::METHOD_GET, $data);
     }
 
     public function getBrandingSettings($channel_id)
@@ -43,6 +43,6 @@ class Channel
             'id' => $channel_id,
         ];
 
-        return $this->request(YouTube::API_CHANNELS, YouTube::METHOD_GET, $data);
+        return$this->youtube->request(YouTube::API_CHANNELS, YouTube::METHOD_GET, $data);
     }
 }
