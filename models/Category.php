@@ -23,6 +23,9 @@ use yii\db\ActiveRecord;
  *
  * @property Category $parent
  * @property Category[] $children
+ * @property Category[] $categories
+ * @property CategoryChannel[] $categoryChannels
+ * @property Channel[] $channels
  */
 class Category extends ActiveRecord
 {
@@ -110,5 +113,29 @@ class Category extends ActiveRecord
     {
         return $this->hasMany(Category::class, ['parent_id' => 'id'])
             ->orderBy(['position' => SORT_ASC]);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getCategories()
+    {
+        return $this->hasMany(Category::className(), ['parent_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getCategoryChannels()
+    {
+        return $this->hasMany(CategoryChannel::className(), ['category_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getChannels()
+    {
+        return $this->hasMany(Channel::className(), ['id' => 'channel_id'])->viaTable('{{%category_channel}}', ['category_id' => 'id']);
     }
 }

@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -24,6 +25,9 @@ use yii\db\ActiveRecord;
  * @property string $synchronized_at
  * @property string $created_at
  * @property string $updated_at
+ *
+ * @property CategoryChannel[] $categoryChannels
+ * @property Category[] $categories
  */
 class Channel extends ActiveRecord
 {
@@ -97,5 +101,21 @@ class Channel extends ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getCategoryChannels()
+    {
+        return $this->hasMany(CategoryChannel::className(), ['channel_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getCategories()
+    {
+        return $this->hasMany(Category::className(), ['id' => 'category_id'])->viaTable('{{%category_channel}}', ['channel_id' => 'id']);
     }
 }

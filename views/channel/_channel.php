@@ -2,6 +2,7 @@
 
 use app\components\Helper;
 use app\models\Channel;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /**
@@ -17,9 +18,10 @@ use yii\helpers\Url;
     <div class="hover-overlay smoothie">
         <div class="vertical-align-bottom">
             <h3><?= $model->title ?></h3>
-            <span class="item-category-span">Category 1</span>
-            <span class="item-category-span">Category 2</span>
-            <span class="item-category-span">Category 3</span>
+
+            <?php foreach ($model->categories as $category): ?>
+                <span class="item-category-span"><?=Html::encode($category->name) ?></span>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="hover-caption dark-overlay smoothie text-center">
