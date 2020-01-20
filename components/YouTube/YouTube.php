@@ -12,17 +12,25 @@ use yii\helpers\VarDumper;
 /**
  * Class YouTube
  * @package components\YouTube
- * @property Channel $channels;
+ * @property Channel $channel;
+ * @property Video $video;
  */
 class YouTube extends Component
 {
     const METHOD_GET = 'GET';
     const METHOD_POST = 'POST';
 
+    const MAX_RESULTS = 50;
+
     const API_CHANNELS = 'https://www.googleapis.com/youtube/v3/channels';
+    const API_SEARCH = 'https://www.googleapis.com/youtube/v3/search';
+    const API_PLAY_LIST_ITEMS = 'https://www.googleapis.com/youtube/v3/playlistItems';
 
     /** @var Channel */
     private $channel;
+
+    /** @var Video */
+    private $video;
 
     /** @var Client */
     private $client;
@@ -35,12 +43,23 @@ class YouTube extends Component
     /**
      * @return Channel
      */
-    public function getChannels()
+    public function getChannel()
     {
         if ($this->channel == null) {
             $this->channel = new Channel($this);
         }
         return $this->channel;
+    }
+
+    /**
+     * @return Video
+     */
+    public function getVideo()
+    {
+        if ($this->video == null) {
+            $this->video = new Video($this);
+        }
+        return $this->video;
     }
 
     /**
@@ -60,13 +79,13 @@ class YouTube extends Component
             ->setData($data);
 
         $response = $request->send();
-
+//die(var_dump(http_build_query($data)));
         if ($response->isOk) {
             return json_decode($response->content, true);
         } else {
             throw new Exception(
-                "Request to $response->url failed with response: \n"
-                . VarDumper::dumpAsString($data->content)
+                "Request to $request->url failed with response: \n"
+                . VarDumper::dumpAsString($response->content)
             );
         }
     }

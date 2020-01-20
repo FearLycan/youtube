@@ -5,8 +5,9 @@ namespace app\commands;
 use app\components\YouTube\YouTube;
 use app\models\Application;
 use app\models\Channel;
-use phpDocumentor\Reflection\Types\This;
+use app\models\Video;
 use yii\console\Controller;
+use yii\debug\panels\EventPanel;
 
 
 class YouTubeController extends Controller
@@ -14,6 +15,8 @@ class YouTubeController extends Controller
 
     /** @var YouTube */
     private $youtube;
+
+    private $nextPageToken = null;
 
     /**
      * YouTubeController constructor.
@@ -44,9 +47,9 @@ class YouTubeController extends Controller
                 $channel = new Channel();
             }
 
-            $statistics = $this->youtube->channels->getStatistics($youtube_id);
-            $snippet = $this->youtube->channels->getSnippet($youtube_id);
-            $settings = $this->youtube->channels->getBrandingSettings($youtube_id);
+            $statistics = $this->youtube->channel->getStatistics($youtube_id);
+            $snippet = $this->youtube->channel->getSnippet($youtube_id);
+            $settings = $this->youtube->channel->getBrandingSettings($youtube_id);
 
             $channel->title = $snippet['items'][0]['snippet']['title'];
             $channel->youtube_id = $youtube_id;
@@ -75,5 +78,55 @@ class YouTubeController extends Controller
         $description = preg_replace('/[\s]+/', ' ', $description);
 
         return $description;
+    }
+
+    public function actionDownloadVideoList($limit = 100)
+    {
+        $today = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7, date("Y")));
+
+        $channels = Channel::find()
+            ->where(['status' => Channel::STATUS_ACTIVE])
+            ->andWhere(['<=', 'synchronized_at', $today])
+            ->limit($limit)
+            ->all();
+
+
+        foreach ($channels as $channel) {
+            do {
+                /** @var Channel $channel */
+                $token = $this->youtube->channel->getUploadToken($channel->youtube_id);
+
+                $list = $this->youtube->video->getList($token, YouTube::MAX_RESULTS, $this->nextPageToken);
+//die(var_dump(json_encode($list['nextPageToken'])));
+                if (isset($list['nextPageToken'])) {
+                    $this->nextPageToken = $list['nextPageToken'];
+                } else {
+                    $this->nextPageToken = 'end';
+                }
+
+                foreach ($list['items'] as $item) {
+                    $youtube_id = $item['snippet']['resourceId']['videoId'];
+
+                    $video = Video::findOne(['youtube_id' => $youtube_id]);
+
+                    if (empty($video)) {
+                        $video = new Video();
+                    }
+
+                    $video->title = $item['snippet']['title'];
+                    $video->description = $item['snippet']['description'];
+                    $video->thumbnails = json_encode($item['snippet']['thumbnails']);
+                    $video->youtube_id = $youtube_id;
+                    $video->status = Video::STATUS_ACTIVE;
+                    $video->channel_id = $channel->id;
+                    $video->published_at = date("Y-m-d H:i:s", strtotime($item['snippet']['publishedAt']));
+                    $video->save();
+
+                    if ($video->errors) {
+                        die(var_dump($video->errors));
+                    }
+                }
+            } while ($this->nextPageToken != 'end');
+        }
     }
 }

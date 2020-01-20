@@ -4,32 +4,28 @@ namespace app\models;
 
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\ActiveQuery;
+
 
 /**
- * This is the model class for table "{{%channel}}".
+ * This is the model class for table "{{%video}}".
  *
  * @property int $id
  * @property string $title
  * @property string $slug
- * @property string $youtube_id
  * @property string $description
  * @property string $thumbnails
- * @property string $banners
- * @property int $viewCount
- * @property int $subscriberCount
- * @property int $videoCount
  * @property int $status
- * @property string $last_activity
- * @property string $synchronized_at
+ * @property string $youtube_id
+ * @property int $channel_id
+ * @property string $published_at
  * @property string $created_at
  * @property string $updated_at
  *
- * @property CategoryChannel[] $categoryChannels
- * @property Category[] $categories
+ * @property Channel $channel
  */
-class Channel extends ActiveRecord
+class Video extends ActiveRecord
 {
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;
@@ -53,6 +49,7 @@ class Channel extends ActiveRecord
                 'attribute' => 'title',
                 'slugAttribute' => 'slug',
                 'ensureUnique' => true,
+                'immutable' => 'true',
             ],
         ];
     }
@@ -62,7 +59,7 @@ class Channel extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%channel}}';
+        return '{{%video}}';
     }
 
     /**
@@ -71,11 +68,12 @@ class Channel extends ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'slug', 'youtube_id'], 'required'],
-            [['description', 'thumbnails', 'banners'], 'string'],
-            [['viewCount', 'subscriberCount', 'videoCount', 'status'], 'integer'],
-            [['last_activity', 'synchronized_at', 'created_at', 'updated_at'], 'safe'],
+            [['title', 'youtube_id', 'channel_id'], 'required'],
+            [['description', 'thumbnails'], 'string'],
+            [['status', 'channel_id'], 'integer'],
+            [['published_at', 'created_at', 'updated_at'], 'safe'],
             [['title', 'slug', 'youtube_id'], 'string', 'max' => 255],
+            [['channel_id'], 'exist', 'skipOnError' => true, 'targetClass' => Channel::className(), 'targetAttribute' => ['channel_id' => 'id']],
         ];
     }
 
@@ -88,16 +86,12 @@ class Channel extends ActiveRecord
             'id' => 'ID',
             'title' => 'Title',
             'slug' => 'Slug',
-            'youtube_id' => 'Youtube ID',
             'description' => 'Description',
             'thumbnails' => 'Thumbnails',
-            'banners' => 'Banners',
-            'viewCount' => 'View Count',
-            'subscriberCount' => 'Subscriber Count',
-            'videoCount' => 'Video Count',
             'status' => 'Status',
-            'last_activity' => 'Last Activity',
-            'synchronized_at' => 'Synchronized At',
+            'youtube_id' => 'Youtube ID',
+            'channel_id' => 'Channel ID',
+            'published_at' => 'Published At',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -106,32 +100,8 @@ class Channel extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getCategoryChannels()
+    public function getChannel()
     {
-        return $this->hasMany(CategoryChannel::className(), ['channel_id' => 'id']);
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getCategories()
-    {
-        return $this->hasMany(Category::className(), ['id' => 'category_id'])->viaTable('{{%category_channel}}', ['channel_id' => 'id']);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHomeBanner()
-    {
-        return json_decode($this->banners, true)['bannerTvMediumImageUrl'];
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getVideos()
-    {
-        return $this->hasMany(Video::className(), ['channel_id' => 'id']);
+        return $this->hasOne(Channel::className(), ['id' => 'channel_id']);
     }
 }

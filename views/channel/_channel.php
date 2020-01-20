@@ -12,8 +12,7 @@ use yii\helpers\Url;
 
 <div class="hover-effect smoothie channel">
     <a href="<?= Url::to(['channel/view', 'slug' => $model->slug]) ?>" class="smoothie">
-        <!--<img src="http://lorempixel.com/1200/800" alt="Image" class="img-responsive smoothie">-->
-       <img src="https://yt3.ggpht.com/_NGHPmqhf_LvYKKmZU_Ef15gGgKrOnhv2lAto5I8N-estNqEQP0cgYAKpVilKDC3dSZ5tb_U=w1280-fcrop64=1,00000000ffffffff-k-c0xffffffff-no-nd-rj" alt="<?= $model->title ?>" class="img-responsive smoothie" style="height: 100%;">
+        <img src="<?= $model->getHomeBanner() ?>" class="img-responsive smoothie" alt="<?= $model->title ?>" style="height: 100%;">
     </a>
     <div class="hover-overlay smoothie">
         <div class="vertical-align-bottom">
